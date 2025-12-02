@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import OpenAI from 'openai';
-import { sql } from 'kysely';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -63,7 +62,12 @@ export async function POST(request: NextRequest) {
       })
       .execute();
 
-    let contextDocs: any[] = [];
+    let contextDocs: Array<{
+      id: number;
+      title: string;
+      content: string;
+      similarity_score: number;
+    }> = [];
     let systemPrompt = 'You are a helpful AI assistant.';
 
     if (useContext) {
